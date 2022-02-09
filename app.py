@@ -32,15 +32,23 @@ def configDataset():
     dadosSimba.rename(columns=mapaTemp, inplace=True)
     dadosSimba['DATE'] = pd.to_datetime(dadosSimba.DATE)
     dadosSimba['data_convertida'] = dadosSimba['DATE'].dt.date
+
     dadosTemperatura['DATE'] = pd.to_datetime(dadosTemperatura.DATE)
     dadosTemperatura['data_convertida'] = dadosTemperatura['DATE'].dt.date
+
+    dadosClorofila.reset_index(inplace=True)
+    dadosClorofila['DATE'] = pd.to_datetime(dadosClorofila.DATE)
+    dadosClorofila['data_convertida'] = dadosClorofila['DATE'].dt.date
+    
     
     dadosVelociadeMar.reset_index(inplace=True)
-    #print(dadosVelociadeMar.DATE)
-    # dadosVelociadeMar['DATE'] = pd.to_datetime(dadosVelociadeMar.DATE)
-    # dadosVelociadeMar['data_convertida'] = dadosVelociadeMar['DATE'].dt.date
+    dadosVelociadeMar['DATE'] = pd.to_datetime(dadosVelociadeMar.DATE)
+    dadosVelociadeMar['data_convertida'] = dadosVelociadeMar['DATE'].dt.date
     
     dataset = pd.merge(dadosSimba, dadosTemperatura, on='data_convertida')
+    datasetCopernicus = pd.merge(dadosVelociadeMar, dadosClorofila, on='data_convertida')
+    dataset = pd.merge(dataset, datasetCopernicus, on='data_convertida')
+
     dataset['Espécies - Indice']=dataset['Espécies - Espécie'].astype('category').cat.codes
     dataset['Classe - Indice']=dataset['Espécies - Classe'].astype('category').cat.codes
 
@@ -71,13 +79,17 @@ def create_figure2(selectVariavel, selectClasse):
         
     elif(valor == "IND_FOR_PRECIP"):
         teste = datasetClasse.IND_FOR_PRECIP.value_counts().reset_index()
+    elif(valor == "sea_water_velocity"):
+        teste = datasetClasse.sea_water_velocity.value_counts().reset_index()
+    elif(valor == "chl"):
+        teste = datasetClasse.chl.value_counts().reset_index()
     else:
         teste = datasetClasse.SEA_SURF_TEMP.value_counts().reset_index()
         print(teste)
     
     plt.bar(teste["index"], teste[valor], width=1.0)
     plt.xlabel(selectVariavel["label"])
-    plt.ylabel("Quantidade de registros")
+    plt.ylabel("Número de registros da classe " + selectClasse["label"])
     
     ax.axis('tight')
     return fig
@@ -97,6 +109,14 @@ seletoresSelect1 = {
     {
         "label": "temperatura do mar",
         "value": "SEA_SURF_TEMP"
+    },
+     {
+        "label": "Velocidade do mar",
+        "value": "sea_water_velocity"
+    },
+     {
+        "label": "Indice de clorofila",
+        "value": "chl"
     },
    ]
 }
@@ -118,6 +138,14 @@ seletoresSelect2 = {
     {
         "label": "Temperatura do mar",
         "value": "SEA_SURF_TEMP"
+    },
+    {
+        "label": "Velocidade do mar",
+        "value": "sea_water_velocity"
+    },
+     {
+        "label": "Indice de clorofila",
+        "value": "chl"
     },
    ]
 }
@@ -181,6 +209,7 @@ def plot_png():
     output = io.BytesIO()
     FigureCanvas(fig).print_png(output)
     return Response(output.getvalue(), mimetype='image/png')
+
 
 if __name__=='__main__':
     app.run(debug=True)

@@ -17,15 +17,15 @@ def configDataset():
     global dataset
 
     dadosSimba = pd.read_excel(
-        "static/assets/data/requested_files/simba/Ocorrências de fauna alvo individual 28_09_2021 20 55.xlsx", index_col=0)
+        "static/assets/data/simba/Ocorrências de fauna alvo individual 28_09_2021 20 55.xlsx", index_col=0)
     dadosTemperatura = pd.read_csv(
-        "static/assets/data/requested_files/noaaDataset.csv", index_col=0)
+        "static/assets/data/noaaDataset.csv", index_col=0)
     dadosVelociadeMarOeste = pd.read_csv(
-        "static/assets/data/requested_files/eatsward sea water velocity.csv", index_col=0)
+        "static/assets/data/eatsward sea water velocity.csv", index_col=0)
     dadosVelociadeMarNorte = pd.read_csv(
-        "static/assets/data/requested_files/nortward sea water velocity.csv", index_col=0)
+        "static/assets/data/nortward sea water velocity.csv", index_col=0)
     dadosClorofila = pd.read_csv(
-        "static/assets/data/requested_files/GLOBAL_ANALYSIS_FORECAST_BIO_001_028.csv", index_col=0)
+        "static/assets/data/GLOBAL_ANALYSIS_FORECAST_BIO_001_028.csv", index_col=0)
 
     mapaTemp = {'Data/Hora': 'DATE'}
     dadosSimba.rename(columns=mapaTemp, inplace=True)

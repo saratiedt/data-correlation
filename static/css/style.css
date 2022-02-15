@@ -36,3 +36,22 @@ body {
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 
 }
+.botao {
+  position: absolute;
+  margin-left: 350px;
+  margin-top: -220px;
+}
+.voltar {
+  background-color: DodgerBlue;
+  border-radius: 50%;
+  border: none;
+  color: white;
+  padding: 12px 16px;
+  font-size: 16px;
+  cursor: pointer;
+  height: 3rem;
+  width: 3rem;
+}
+.voltar:hover {
+  background-color: rgb(94, 174, 253);
+}

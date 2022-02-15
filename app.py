@@ -22,8 +22,11 @@ def configDataset():
     url_dados_temperatura = 'https://github.com/saratiedt/ocean-dataset/blob/main/requested_files/noaaDataset.csv?raw=true'
     dadosTemperatura = pd.read_csv(url_dados_temperatura,index_col=0)
 
-    url_dados_velocidade_mar = 'https://github.com/saratiedt/ocean-dataset/blob/main/requested_files/GLOBAL_ANALYSIS_FORECAST_PHY_001_024.csv?raw=true'
-    dadosVelociadeMar = pd.read_csv(url_dados_velocidade_mar,index_col=0)
+    url_dados_velocidade_mar_oeste = 'https://github.com/saratiedt/ocean-dataset/blob/main/requested_files/eatsward%20sea%20water%20velocity.csv?raw=true'
+    dadosVelociadeMarOeste = pd.read_csv(url_dados_velocidade_mar_oeste,index_col=0)
+
+    url_dados_velocidade_mar_norte = 'https://github.com/saratiedt/ocean-dataset/blob/main/requested_files/nortward%20sea%20water%20velocity.csv?raw=true'
+    dadosVelociadeMarNorte = pd.read_csv(url_dados_velocidade_mar_norte,index_col=0)
 
     url_dados_clorofila = 'https://github.com/saratiedt/ocean-dataset/blob/main/requested_files/GLOBAL_ANALYSIS_FORECAST_BIO_001_028.csv?raw=true'
     dadosClorofila = pd.read_csv(url_dados_clorofila,index_col=0)
@@ -41,13 +44,21 @@ def configDataset():
     dadosClorofila['data_convertida'] = dadosClorofila['DATE'].dt.date
     
     
-    dadosVelociadeMar.reset_index(inplace=True)
-    dadosVelociadeMar['DATE'] = pd.to_datetime(dadosVelociadeMar.DATE)
-    dadosVelociadeMar['data_convertida'] = dadosVelociadeMar['DATE'].dt.date
+    dadosVelociadeMarOeste.reset_index(inplace=True)
+    dadosVelociadeMarOeste['DATE'] = pd.to_datetime(dadosVelociadeMarOeste.DATE)
+    dadosVelociadeMarOeste['data_convertida'] = dadosVelociadeMarOeste['DATE'].dt.date
+
+
+    dadosVelociadeMarNorte.reset_index(inplace=True)
+    dadosVelociadeMarNorte['DATE'] = pd.to_datetime(dadosVelociadeMarNorte.DATE)
+    dadosVelociadeMarNorte['data_convertida'] = dadosVelociadeMarNorte['DATE'].dt.date
+
+    
     
     dataset = pd.merge(dadosSimba, dadosTemperatura, on='data_convertida')
-    datasetCopernicus = pd.merge(dadosVelociadeMar, dadosClorofila, on='data_convertida')
+    datasetCopernicus = pd.merge(dadosVelociadeMarOeste, dadosClorofila, on='data_convertida')
     dataset = pd.merge(dataset, datasetCopernicus, on='data_convertida')
+    dataset = pd.merge(dataset, dadosVelociadeMarNorte, on='data_convertida')
 
     dataset['Espécies - Indice']=dataset['Espécies - Espécie'].astype('category').cat.codes
     dataset['Classe - Indice']=dataset['Espécies - Classe'].astype('category').cat.codes
@@ -75,7 +86,7 @@ def create_figure2(selectVariavel, selectClasse):
     valor = selectVariavel["value"]
 
     if(valor == "WIND_SPEED"):
-        teste = datasetClasse.WIND_SPEED.value_counts(normalize-True).reset_index()
+        teste = datasetClasse.WIND_SPEED.value_counts().reset_index()
         
     elif(valor == "IND_FOR_PRECIP"):
         teste = datasetClasse.IND_FOR_PRECIP.value_counts().reset_index()
@@ -83,6 +94,10 @@ def create_figure2(selectVariavel, selectClasse):
         teste = datasetClasse.sea_water_velocity.value_counts().reset_index()
     elif(valor == "chl"):
         teste = datasetClasse.chl.value_counts().reset_index()
+    elif(valor == "uo"):
+        teste = datasetClasse.uo.value_counts().reset_index()
+    elif(valor == "vo"):
+        teste = datasetClasse.vo.value_counts().reset_index()
     else:
         teste = datasetClasse.SEA_SURF_TEMP.value_counts().reset_index()
         print(teste)
@@ -111,8 +126,12 @@ seletoresSelect1 = {
         "value": "SEA_SURF_TEMP"
     },
      {
-        "label": "Velocidade do mar",
-        "value": "sea_water_velocity"
+         "label": "Velocidade do mar Leste e Oeste",
+        "value": "uo"
+    },
+    {
+         "label": "Velocidade do mar Sul e Norte",
+        "value": "vo"
     },
      {
         "label": "Indice de clorofila",
@@ -140,8 +159,12 @@ seletoresSelect2 = {
         "value": "SEA_SURF_TEMP"
     },
     {
-        "label": "Velocidade do mar",
-        "value": "sea_water_velocity"
+        "label": "Velocidade do mar Leste e Oeste",
+        "value": "uo"
+    },
+    {
+         "label": "Velocidade do mar Sul e Norte",
+        "value": "vo"
     },
      {
         "label": "Indice de clorofila",

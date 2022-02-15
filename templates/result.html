@@ -11,14 +11,27 @@
     />
     <link
       rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <link
+      rel="stylesheet"
       href="{{ url_for('static', filename= 'css/style.css') }}"
     />
     <title>Correlacao</title>
+    <script>
+      function goBack() {
+        window.history.back();
+      }
+    </script>
   </head>
   <body>
     <div class="flex-container">
+      <div class="botao">
+        <button class="voltar">
+          <i class="fa fa-arrow-left" onclick="goBack()"></i>
+        </button>
+      </div>
       <div class="item">
-        <button type="submit" class="btn btn-primary">Voltar</button>
         <h3>Correlação Encontrada</h3>
         <h1>{{data}}</h1>
         <img src="/plot.png" />
